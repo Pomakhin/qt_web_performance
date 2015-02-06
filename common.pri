@@ -13,12 +13,12 @@ isEmpty(INSTALL_DIR):INSTALL_DIR = $$[QT_INSTALL_BINS]
 target.path += $$INSTALL_DIR/qtwebkit-benchmark
 INSTALLS += target
 
-INCLUDEPATH += $$PWD/common
+INCLUDEPATH += $$PWD/bin/common
 debug_and_release: {
     CONFIG(debug, debug|release) QMAKE_LIBDIR += $$PWD/common/debug
     else: QMAKE_LIBDIR += $$PWD/common/release
 } else:
-    QMAKE_LIBDIR += $$PWD/common
+    QMAKE_LIBDIR += $$PWD/bin/common
 
 !symbian: {
 LIBS += -lcommon
