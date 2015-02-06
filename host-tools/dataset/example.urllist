@@ -1,0 +1,7 @@
+# --- url list ---
+# one line per url
+# format: url	-tab-	optional description
+#
+# e.g:
+http://www.google.com/
+http://labs.trolltech.com/blogs/		Qt labs

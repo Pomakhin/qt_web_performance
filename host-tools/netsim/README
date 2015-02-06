@@ -1,0 +1,30 @@
+== What ==
+Simulate network latency and packet loss on Linux.
+
+== How is it done? ==
+It is using the netfilter userspace API to add latency
+and drop every N-th package of the link. This is based
+on the libnetfilter_queue userspace application with added
+code for latency and packet loss handling.
+
+== How to compile? ==
+To compile you will need to have the libnetfilter_queue
+headers installed and then issue qmake of Qt4 in the netsim
+directory.
+
+== How to setup? ==
+You will need to create a netfilter rule using iptables..
+
+   iptables -I INPUT -o lo -j NFQUEUE
+
+This simple rule will insert a rule to the INPUT chain for
+all packets going on lo and will send them to the NFQUEUE
+target. Now packets on localhost can be handled by the
+test program.
+
+== How to run? ==
+You will need root/NET_CAP privileges and then can issue a:
+
+    ./netsim --mode=umts
+
+For more help please see ./netsim --help

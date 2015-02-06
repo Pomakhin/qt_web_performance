@@ -1,0 +1,10 @@
+= QtWebKit benchmarks =
+
+== What ==
+
+These benchmarks will test loading speed and drawing speed of single
+pages. Real webcontent will be used to do these tests.
+
+== How ==
+
+See the wiki at: http://trac.webkit.org/wiki/QtWebKitPerformanceWork

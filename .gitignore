@@ -1,0 +1,5 @@
+*.o
+*.moc
+*.user
+Makefile
+/bin
