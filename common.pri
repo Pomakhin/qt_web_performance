@@ -6,7 +6,7 @@ QT += testlib \
     webkit \
     sql
 QT += widgets
-QT += webkitwidgets
+QT += webenginewidgets
 
 # install target
 isEmpty(INSTALL_DIR):INSTALL_DIR = $$[QT_INSTALL_BINS]

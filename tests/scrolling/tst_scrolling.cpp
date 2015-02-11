@@ -25,12 +25,12 @@
 #include "databasenetworkaccessmanager.h"
 #include "databasetests.h"
 #include "paintingwebviewbench.h"
-#include "webpage.h"
 
-#include <qwebframe.h>
-#include <qwebview.h>
 
-static void loadUrl(QWebView* view, const QUrl& url) {
+#include <QWebEnginePage>
+#include <QWebEngineView>
+
+static void loadUrl(QWebEngineView* view, const QUrl& url) {
     view->load(url);
     ::waitForSignal(view, SIGNAL(loadFinished(bool)));
 
@@ -55,12 +55,6 @@ public:
 
     JavaInterface* m_pObj;
 };
-
-static bool canScroll(QWebFrame* mainFrame) {
-    if (mainFrame->scrollBarValue(Qt::Vertical) == mainFrame->scrollBarMaximum(Qt::Vertical))
-        return false;
-    return true;
-}
 
 class tst_Scrolling : public QObject
 {
@@ -90,7 +84,7 @@ private:
 void tst_Scrolling::onJavaInited()
 {
     m_scriptRoot.m_pObj = new JavaInterface();
-    m_view->page()->mainFrame()->addToJavaScriptWindowObject("gilauncher", &m_scriptRoot);
+   // m_view->page()->jav mainFrame()->addToJavaScriptWindowObject("gilauncher", &m_scriptRoot);
 }
 
 tst_Scrolling::~tst_Scrolling()
@@ -102,9 +96,9 @@ void tst_Scrolling::init()
 {
     m_view = new PaintingWebViewBench();
 
-    QWebPage* page = new WebPage(m_view);
-    if (QSqlDatabase::database().isValid())
-        page->setNetworkAccessManager(new DatabaseNetworkAccessManager);
+    QWebEnginePage* page = new QWebEnginePage(m_view);
+//    if (QSqlDatabase::database().isValid())
+//        page->setNetworkAccessManager(new DatabaseNetworkAccessManager);
 
     m_view->setPage(page);
 
@@ -123,7 +117,7 @@ void tst_Scrolling::init()
     m_view->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
     m_view->show();
 #endif
-    connect(m_view->page()->mainFrame(), SIGNAL(javaScriptWindowObjectCleared()), this, SLOT(onJavaInited()));
+    //connect(m_view->page()->mainFrame(), SIGNAL(javaScriptWindowObjectCleared()), this, SLOT(onJavaInited()));
     QTest::qWaitForWindowExposed(m_view);
 }
 
@@ -152,7 +146,7 @@ void tst_Scrolling::scroll()
 
 
     /* force a layout */
-    QWebFrame* mainFrame = m_view->page()->mainFrame();
+    //QWebEngineFrame* mainFrame = m_view->page()->mainFrame();
 
     const int scrollIncrement = 10;
     // first rendering outside of the benchmark
@@ -160,6 +154,7 @@ void tst_Scrolling::scroll()
     m_view->update();
     qApp->processEvents();
 
+    int l_height = m_view->page()->runJavaScript("$('.wrapper').prop('scrollHeight');");
     int l_height = mainFrame->evaluateJavaScript("$('.wrapper').prop('scrollHeight');").toInt();
     int l_screenHeight = mainFrame->evaluateJavaScript("$('.wrapper').height();").toInt();
     int l_scrollArea = l_height - l_screenHeight;
@@ -209,7 +204,7 @@ void tst_Scrolling::paintingSpeed()
 
     loadUrl(m_view, url);
 
-    QWebFrame* mainFrame = m_view->page()->mainFrame();
+    QWebEngineFrame* mainFrame = m_view->page()->mainFrame();
 //    if (mainFrame->scrollBarValue(Qt::Vertical) == 300/*mainFrame->scrollBarMaximum(Qt::Vertical)*/) {
 //        QSKIP("No scrolling for this page", SkipSingle);
 //    }

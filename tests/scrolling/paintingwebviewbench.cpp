@@ -20,7 +20,7 @@
 #include "paintingwebviewbench.h"
 
 PaintingWebViewBench::PaintingWebViewBench(QWidget* parent)
-    : QWebView(parent)
+    : QWebEngineView(parent)
     , testing(false)
     , controller(0)
 {
@@ -30,10 +30,10 @@ void PaintingWebViewBench::paintEvent(QPaintEvent* event)
 {
     if (testing) {
         controller->startSubMeasure();
-        QWebView::paintEvent(event);
+        QWebEngineView::paintEvent(event);
         controller->stopSubMeasure();
 
         emit painted();
     } else
-        QWebView::paintEvent(event);
+        QWebEngineView::paintEvent(event);
 }

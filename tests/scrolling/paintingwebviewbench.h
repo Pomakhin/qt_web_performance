@@ -22,10 +22,10 @@
 
 #include "benchmark.h"
 
-#include <qwebview.h>
+#include <QWebEngineView>
 #include <QTest>
 
-class PaintingWebViewBench : public QWebView
+class PaintingWebViewBench : public QWebEngineView
 {
     Q_OBJECT
 public:
