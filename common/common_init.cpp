@@ -18,7 +18,8 @@ QList<QUrl> test_urls()
          */
 
        // add_url_to_test_urls(QUrl("http://172.30.24.248/frontend/site/index?autotest=yes"));
-          add_url_to_test_urls(QUrl("http://devlauncher.q1.ru/system/index?autotest=yes"));
+       //   add_url_to_test_urls(QUrl("http://devlauncher.q1.ru/system/index?autotest=yes"));
+        add_url_to_test_urls(QUrl("http://172.30.206.2/frontend/site/index/?autotest=yes"));
 
 //        add_url_to_test_urls(QUrl("http://www.google.com/ncr"));
 //        add_url_to_test_urls(QUrl("http://maps.google.com"));

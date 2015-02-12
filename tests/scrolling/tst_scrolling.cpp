@@ -79,6 +79,8 @@ private Q_SLOTS:
 private:
     PaintingWebViewBench* m_view;
     CJavaInterfaceRoot  m_scriptRoot;
+
+    void onJavaGetHeight(const QVariant &result);
 };
 
 void tst_Scrolling::onJavaInited()
@@ -154,10 +156,19 @@ void tst_Scrolling::scroll()
     m_view->update();
     qApp->processEvents();
 
-    int l_height = m_view->page()->runJavaScript("$('.wrapper').prop('scrollHeight');");
-    int l_height = mainFrame->evaluateJavaScript("$('.wrapper').prop('scrollHeight');").toInt();
-    int l_screenHeight = mainFrame->evaluateJavaScript("$('.wrapper').height();").toInt();
-    int l_scrollArea = l_height - l_screenHeight;
+    m_view->page()->runJavaScript("$('.wrapper').prop('scrollHeight');", [](const QVariant &result)
+    {
+        int l_result = result.toInt();
+        int i;
+        i = 0;
+    });
+    m_view->page()->runJavaScript("$('.wrapper').height();", [](const QVariant &result)
+    {
+        int l_result = result.toInt();
+        int i;
+        i = 0;
+    });
+    int l_scrollArea = 1615;//l_height - l_screenHeight;
     int l_curScroll = 0;
 
     WEB_BENCHMARK_TIME_PER_FRAME("graphicsscrolling::scroll", url.toString()) {
@@ -169,7 +180,7 @@ void tst_Scrolling::scroll()
 //            mainFrame->evaluateJavaScript(l_javaStr);
             //mainFrame->evaluateJavaScript("$('.wrapper').animate({scrollTop: $('.wrapper').scrollTop() + 30}); null");
             QString l_javaStr = QString("$('.wrapper').scrollTop($('.wrapper').scrollTop() + %1); null").arg(scrollIncrement);
-            mainFrame->evaluateJavaScript(l_javaStr);
+            m_view->page()->runJavaScript(l_javaStr);
             l_curScroll += scrollIncrement;
 
             qApp->processEvents();
@@ -179,7 +190,7 @@ void tst_Scrolling::scroll()
             web__controller.newFrame();
             //mainFrame->evaluateJavaScript("var p = $('.wrapper'); p.animate({scrollTop: p.scrollTop() - 30})");
             QString l_javaStr = QString("$('.wrapper').scrollTop($('.wrapper').scrollTop() - %1); null").arg(scrollIncrement);
-            mainFrame->evaluateJavaScript(l_javaStr);
+            m_view->page()->runJavaScript(l_javaStr);
             l_curScroll -= scrollIncrement;
             qApp->processEvents();
         } while(l_curScroll > 0);
@@ -204,14 +215,14 @@ void tst_Scrolling::paintingSpeed()
 
     loadUrl(m_view, url);
 
-    QWebEngineFrame* mainFrame = m_view->page()->mainFrame();
+//    QWebEngineFrame* mainFrame = m_view->page()->mainFrame();
 //    if (mainFrame->scrollBarValue(Qt::Vertical) == 300/*mainFrame->scrollBarMaximum(Qt::Vertical)*/) {
 //        QSKIP("No scrolling for this page", SkipSingle);
 //    }
 
-    int l_height = mainFrame->evaluateJavaScript("$('.wrapper').prop('scrollHeight');").toInt();
-    int l_screenHeight = mainFrame->evaluateJavaScript("$('.wrapper').height();").toInt();
-    int l_scrollArea = l_height - l_screenHeight;
+    //int l_height = mainFrame->evaluateJavaScript("$('.wrapper').prop('scrollHeight');").toInt();
+    //int l_screenHeight = mainFrame->evaluateJavaScript("$('.wrapper').height();").toInt();
+    int l_scrollArea =  1615;//l_height - l_screenHeight;
     int l_curScroll = 0;
     const int scrollIncrement = 10;
 
@@ -222,7 +233,7 @@ void tst_Scrolling::paintingSpeed()
         { // scroll forward
             //mainFrame->scroll(0, scrollIncrement);
             QString l_javaStr = QString("$('.wrapper').scrollTop($('.wrapper').scrollTop() + %1); null").arg(scrollIncrement);
-            mainFrame->evaluateJavaScript(l_javaStr);
+            m_view->page()->runJavaScript(l_javaStr);
             l_curScroll += scrollIncrement;
             waitForSignal(m_view, SIGNAL(painted()));
         }
@@ -231,7 +242,7 @@ void tst_Scrolling::paintingSpeed()
         { // then backward
             //mainFrame->scroll(0, -scrollIncrement);
             QString l_javaStr = QString("$('.wrapper').scrollTop($('.wrapper').scrollTop() - %1); null").arg(scrollIncrement);
-            mainFrame->evaluateJavaScript(l_javaStr);
+            m_view->page()->runJavaScript(l_javaStr);
             l_curScroll -= scrollIncrement;
             waitForSignal(m_view, SIGNAL(painted()));
         }
@@ -243,6 +254,11 @@ void tst_Scrolling::paintingSpeed()
     m_view->controller = 0;
 
 
+}
+
+void tst_Scrolling::onJavaGetHeight(const QVariant &result)
+{
+    int l_height = result.toInt();
 }
 
 DBWEBTEST_MAIN(tst_Scrolling)
